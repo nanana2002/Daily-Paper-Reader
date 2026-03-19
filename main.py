@@ -8,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from openai import OpenAI
 
 # 1. 环境变量读取
-KIMI_API_KEY = os.environ.get("KIMI_API_KEY")
+DASHSCOPE_API_KEY = os.environ.get("DASHSCOPE_API_KEY")
 EMAIL_SENDER = os.environ.get("EMAIL_SENDER")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 EMAIL_RECEIVER = os.environ.get("EMAIL_RECEIVER")
@@ -71,9 +71,12 @@ def fetch_semantic_scholar():
     return papers
 
 def analyze_with_llm(paper):
-    """调用大模型提炼论文信息"""
-    # 【修改点1】：这里的 base_url 换成了 Kimi 的官方接口地址
-    client = OpenAI(api_key=KIMI_API_KEY, base_url="https://api.moonshot.cn/v1")
+    """调用阿里云大模型提炼论文信息"""
+    client = OpenAI(
+        api_key=DASHSCOPE_API_KEY, 
+        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
+    )
+    
     prompt = f"""
     你是一个顶级的多媒体安全与AIGC研究助手。请阅读以下英文论文的标题和摘要：
     Title: {paper['title']}
@@ -87,16 +90,18 @@ def analyze_with_llm(paper):
     ✨ **亮点：**[根据摘要分析这篇论文的创新点、采用了什么方法、或者解决了什么具体问题，用一到两句话直击痛点]
     """
     try:
-        # 【修改点2】：这里的 model 换成了 Kimi 的模型名称
         response = client.chat.completions.create(
-            model="moonshot-v1-8k",
+            model="tongyi-xiaomi-analysis-flash",  # 你指定的模型
             messages=[{"role": "user", "content": prompt}],
-            temperature=0.3
+            temperature=0.3, # 推荐 0.3，做摘要更稳定
+            extra_body={
+                "top_k": 1
+            }
         )
         return response.choices[0].message.content
     except Exception as e:
         return f"大模型处理失败: {e}"
-
+        
 def send_email(content):
     """发送 HTML 格式的精美邮件"""
     msg = MIMEMultipart()
