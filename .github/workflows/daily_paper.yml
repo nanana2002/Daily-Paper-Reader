@@ -25,10 +25,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run daily paper script
-        env:
-          KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
-          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
-          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+      env:
+        DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}  # <--- 阿里云的钥匙
+        EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
+        SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
         run: python main.py
