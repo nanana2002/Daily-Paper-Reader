@@ -26,8 +26,9 @@ QUERIES =[
 # CCF-A / 顶会顶刊 关键词 (用于匹配 Semantic Scholar 等)
 CCF_A_VENUES =["CVPR", "ICCV", "ECCV", "NeurIPS", "ICML", "ICLR", "AAAI", "IJCAI", "ACM Multimedia", "TPAMI", "IJCV"]
 
-# 设定的起始日期 (2025年1月1日)
-START_DATE = datetime.datetime(2025, 1, 1, tzinfo=datetime.timezone.utc)
+# 设定的起始日期搜索近三天的论文
+START_DATE = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=3)
+
 # 每封邮件包含的论文数量
 BATCH_SIZE = 20
 
